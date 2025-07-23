@@ -1,5 +1,10 @@
 import { Stack } from 'expo-router/stack';
 
 export default function Layout() {
-    return <Stack />;
+    return (
+    <Stack>
+        <Stack.Screen name='pomodoro' options={{ headerShown: false }}/>
+    </Stack>
+    );
 }
+
