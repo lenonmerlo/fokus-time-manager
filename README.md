@@ -29,6 +29,8 @@ O objetivo é melhorar sua produtividade e bem-estar por meio de ciclos de foco 
 ## 📷 Preview
 
 <img src="./app/pomodoro-preview.png" width="300" alt="App Screenshot">
+<img src="./app/short-preview.png" width="300" alt="App Screenshot">
+<img src="./app/long-preview.png" width="300" alt="App Screenshot">
 
 ---
 
