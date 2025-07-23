@@ -19,6 +19,6 @@ const styles = StyleSheet.create({
   contextButtonText: {
     fontSize: 12.5,
     color: "#FFF",
-    padding: 8
+    padding: 8,
   }
 });

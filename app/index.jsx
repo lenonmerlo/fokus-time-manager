@@ -27,15 +27,41 @@ const pomodoro = [
 
 export default function Index() {
   const [timerType, setTimerType] = useState(pomodoro[0]);
+  const [seconds, setSeconds] = useState(pomodoro[0].initialValue)
+  const [timerRunning, setTimeRunning] = useState(false)
 
   const timerRef = useRef(null)
 
+  const clear = () => {
+    if (timerRef.current != null ) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+      setTimeRunning(false)
+    }
+  }
+
+  const toggleTimerType = (newTimerType) => {
+    setTimerType(newTimerType)
+    setSeconds(newTimerType.initialValue)
+    clear()
+  }
+
   const toggleTimer = () => {
     if (timerRef.current) {
-      clearInterval(timerRef.current)
+      clear()
       return
     }
+
+    setTimeRunning(true)
+
     const id = setInterval(() => {
+      setSeconds(oldState => {
+        if (oldState === 0) {
+          clear()
+          return timerType.initialValue
+        }
+        return oldState -1
+      })
       console.log("Timer rolando")
     }, 1000)
     timerRef.current = id
@@ -50,14 +76,14 @@ export default function Index() {
             <ActionButton 
               key={p.id}
               active={ timerType.id === p.id}
-              onPress={() => setTimerType(p)}
+              onPress={() => toggleTimerType(p)}
               display={p.display}
             />
           ))}
         </View>
-        <Timer totalSeconds={timerType.initialValue}/>
+        <Timer totalSeconds={seconds}/>
         <FokusButton
-          title={timerRef.current ? "Pausar" : "Começar"}
+          title={timerRunning ? "Pausar" : "Começar"}
           onPress={toggleTimer}/>
       </View>
       <View style={styles.footer}>
