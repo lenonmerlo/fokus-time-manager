@@ -1,35 +1,49 @@
 import { createContext, useState } from "react";
 
-export const TaskContext = createContext();
+export const TaskContext = createContext()
 
-export function TasksProvider({ children }) {
-  const [tasks, setTasks] = useState([]);
+export function TasksProvider ({ children }) {
 
-  const addTask = (description) => {
-    console.log("Tarefa será adicionada...")
-    setTasks((oldState) => [
-      ...oldState,
-      { description, id: oldState.length + 1, completed: false },
-    ]);
-  };
+    const [tasks, setTasks] = useState([])
 
-  const toggleTaskCompleted = (id) => {
-    setTasks((oldState) =>
-      oldState.map((t) =>
-        t.id === id ? { ...t, completed: !t.completed } : t
-      )
-    );
-  };
+    const addTask = (description) => {
+        console.log('tarefa vai ser adicionada')
+        setTasks(oldState => {
+            return [
+                ...oldState,
+                {
+                    description,
+                    id: oldState.length + 1
+                }
+            ]
+        })
+    }
 
-  const deleteTask = (id) => {
-    setTasks((oldState) => oldState.filter((t) => t.id !== id));
-  };
+    const toggleTaskCompleted = (id) => {
+        setTasks(oldState => {
+            return oldState.map(t => {
+                if (t.id == id) {
+                    t.completed = !t.completed
+                }
+                return t
+            })
+        })
+    }
 
-  return (
-    <TaskContext.Provider
-      value={{ tasks, addTask, toggleTaskCompleted, deleteTask }}
-    >
-      {children}
-    </TaskContext.Provider>
-  );
+    const deleteTask = (id) => {
+        setTasks(oldState => {
+            return oldState.filter(t => t.id != id)
+        })
+    }
+
+    return (
+        <TaskContext.Provider value={{
+            tasks,
+            addTask,
+            toggleTaskCompleted,
+            deleteTask
+        }}>
+            { children }
+        </TaskContext.Provider>
+    )
 }
