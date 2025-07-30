@@ -1,49 +1,83 @@
-import { createContext, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createContext, useEffect, useState } from "react";
 
-export const TaskContext = createContext()
+export const TaskContext = createContext();
 
-export function TasksProvider ({ children }) {
+const TASKS_STORAGE_KEY = "fokus-tasks"
 
-    const [tasks, setTasks] = useState([])
+export function TasksProvider({ children }) {
+  const [tasks, setTasks] = useState([]);
 
-    const addTask = (description) => {
-        console.log('tarefa vai ser adicionada')
-        setTasks(oldState => {
-            return [
-                ...oldState,
-                {
-                    description,
-                    id: oldState.length + 1
-                }
-            ]
-        })
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem(TASKS_STORAGE_KEY);
+        const loadedData =  jsonValue != null ? JSON.parse(jsonValue) : [];
+        setTasks(loadedData)
+        setIsLoaded(true)
+      } catch (e) {
+        // error reading value
+      }
+    };
+    getData()
+  }, []);
+
+  useEffect(() => {
+    const storeData = async (value) => {
+      try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem(TASKS_STORAGE_KEY, jsonValue);
+      } catch (e) {
+        // saving error
+      }
+    };
+    if (isLoaded) {
+      storeData(tasks);
     }
+  }, [isLoaded, tasks]);
 
-    const toggleTaskCompleted = (id) => {
-        setTasks(oldState => {
-            return oldState.map(t => {
-                if (t.id == id) {
-                    t.completed = !t.completed
-                }
-                return t
-            })
-        })
-    }
+  const addTask = (description) => {
+    console.log("tarefa vai ser adicionada");
+    setTasks((oldState) => {
+      return [
+        ...oldState,
+        {
+          description,
+          id: oldState.length + 1,
+        },
+      ];
+    });
+  };
 
-    const deleteTask = (id) => {
-        setTasks(oldState => {
-            return oldState.filter(t => t.id != id)
-        })
-    }
+  const toggleTaskCompleted = (id) => {
+    setTasks((oldState) => {
+      return oldState.map((t) => {
+        if (t.id == id) {
+          t.completed = !t.completed;
+        }
+        return t;
+      });
+    });
+  };
 
-    return (
-        <TaskContext.Provider value={{
-            tasks,
-            addTask,
-            toggleTaskCompleted,
-            deleteTask
-        }}>
-            { children }
-        </TaskContext.Provider>
-    )
+  const deleteTask = (id) => {
+    setTasks((oldState) => {
+      return oldState.filter((t) => t.id != id);
+    });
+  };
+
+  return (
+    <TaskContext.Provider
+      value={{
+        tasks,
+        addTask,
+        toggleTaskCompleted,
+        deleteTask,
+      }}
+    >
+      {children}
+    </TaskContext.Provider>
+  );
 }
