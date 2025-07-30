@@ -12,7 +12,10 @@ export default function Index() {
           <Text style={styles.bold}>mergulhe no que {"\n"}importa</Text>
         </Text>
         <Image source={require("../assets/images/home.png")} />
-        <FokusButton title="Quero iniciar!" onPress={() => router.navigate('/pomodoro')}/>
+        <FokusButton
+          title="Quero iniciar!"
+          onPress={() => router.navigate("/pomodoro")}
+        />
       </View>
       <View style={styles.footer}>
         <Text style={styles.footerText}>
